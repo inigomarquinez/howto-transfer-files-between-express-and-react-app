@@ -8,3 +8,8 @@ https://blog.logrocket.com/axios-or-fetch-api/#:~:text=To%20send%20data%2C%20fet
 https://davidwalsh.name/fetch
 
 https://stackoverflow.com/questions/60454048/how-does-axios-handle-blob-vs-arraybuffer-as-responsetype
+
+Cors: enable content-disposition
+https://developer.mozilla.org/es/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
+https://medium.com/zero-equals-false/using-cors-in-express-cac7e29b005b
+https://expressjs.com/en/resources/middleware/cors.html

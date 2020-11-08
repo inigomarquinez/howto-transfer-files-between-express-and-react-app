@@ -19,7 +19,9 @@ if (!process.env.PORT) {
 
 const app = express();
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  exposedHeaders: ['Content-Disposition'],
+}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -28,17 +30,18 @@ app.get('/helloWorld', (_req, res) => {
 });
 
 app.get('/download', (_req, res) => {
-  res.download(
-    join(__dirname, 'assets', 'file-to-download.zip'),
-    'download.zip',
-    (error) => {
-      if (error) {
-        console.error('Error downloading file: >>>', error);
-      } else {
-        console.info('File downloaded!');
-      }
-    },
-  );
+  // res.download(
+  //   join(__dirname, 'assets', 'file-to-download.zip'),
+  //   'file-to-download.zip',
+  //   (error) => {
+  //     if (error) {
+  //       console.error('Error downloading file: >>>', error);
+  //     } else {
+  //       console.info('File downloaded!');
+  //     }
+  //   },
+  // );
+  res.download(join(__dirname, 'assets', 'file-to-download.zip'));
 });
 
 app.get('/long', async (_req, res) => {

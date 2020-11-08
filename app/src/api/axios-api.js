@@ -20,7 +20,6 @@ const axiosDownloadFile = async (targetURL) => {
   console.log(`[AXIOS RESPONSE] GET ${targetURL}/download ...`);
   console.log(response);
 
-  console.log('data @ app', response.data);
   return response;
 };
 

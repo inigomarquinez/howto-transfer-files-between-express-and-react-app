@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-console */
 import React, { createRef, useState } from 'react';
 import Button from '@material-ui/core/Button';
@@ -44,7 +45,10 @@ const App = () => {
                         printCurrentResponse(response);
                         return response;
                       })
-                      .then(({ data }) => printCurrentBody(data))}
+                      .then(({ data }) => {
+                        printCurrentBody(data);
+                        alert(data);
+                      })}
                   >
                     Using axios
                   </Button>
@@ -54,7 +58,10 @@ const App = () => {
                         printCurrentResponse(response);
                         return response.json();
                       })
-                      .then((body) => printCurrentBody(body))}
+                      .then((body) => {
+                        printCurrentBody(body);
+                        alert(body);
+                      })}
                   >
                     Using fetch
                   </Button>
@@ -77,25 +84,24 @@ const App = () => {
                     onClick={async () => downloadFile(ApiLib.AXIOS, value)
                       .then((response) => {
                         printCurrentResponse(response);
-                        return response;
-                      })
-                      .then(({ data }) => {
-                        printCurrentBody(data);
-                        const blob = new Blob([data], { type: 'application/zip' });
-                        download(blob);
+                        printCurrentBody(null);
+
+                        const re = /filename="(?<filename>.*)"/;
+                        const { groups: { filename } } = re.exec(response.headers['content-disposition']);
+
+                        const blob = new Blob([response.data], { type: response.data.type });
+                        download(blob, filename, response.data.type);
                       })}
                   >
                     Using axios
                   </Button>
                   <Button
                     onClick={async () => downloadFile(ApiLib.FETCH, value)
-                      .then((response) => {
+                      .then(async (response) => {
                         printCurrentResponse(response);
-                        return response.blob();
-                      })
-                      .then((body) => {
-                        printCurrentBody(body);
-                        download(body);
+                        printCurrentBody(null);
+                        const blob = await response.blob();
+                        download(blob);
                       })}
                   >
                     Using fetch
