@@ -15,6 +15,11 @@ import download from 'downloadjs';
 import {
   ApiLib,
   Target,
+} from './constants';
+import {
+  getFileInfo,
+} from './utils';
+import {
   helloWorld,
   downloadFile,
   uploadFile,
@@ -86,11 +91,9 @@ const App = () => {
                         printCurrentResponse(response);
                         printCurrentBody(null);
 
-                        const re = /filename="(?<filename>.*)"/;
-                        const { groups: { filename } } = re.exec(response.headers['content-disposition']);
-
+                        const { filename, mimetype } = getFileInfo(response.headers, ApiLib.AXIOS);
                         const blob = new Blob([response.data], { type: response.data.type });
-                        download(blob, filename, response.data.type);
+                        download(blob, filename, mimetype);
                       })}
                   >
                     Using axios
@@ -100,8 +103,10 @@ const App = () => {
                       .then(async (response) => {
                         printCurrentResponse(response);
                         printCurrentBody(null);
+
+                        const { filename, mimetype } = getFileInfo(response.headers, ApiLib.FETCH);
                         const blob = await response.blob();
-                        download(blob);
+                        download(blob, filename, mimetype);
                       })}
                   >
                     Using fetch

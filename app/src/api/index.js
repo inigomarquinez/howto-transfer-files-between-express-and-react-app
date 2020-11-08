@@ -1,4 +1,8 @@
 import {
+  ApiLib,
+  Target,
+} from '../constants';
+import {
   axiosHelloWorld,
   axiosDownloadFile,
   axiosUploadFile,
@@ -8,16 +12,6 @@ import {
   fetchDownloadFile,
   fetchUploadFile,
 } from './fetch-api';
-
-const ApiLib = {
-  AXIOS: 'axios',
-  FETCH: 'fetch',
-};
-
-const Target = {
-  SERVER: 'server',
-  PROXY: 'proxy',
-};
 
 const helloWorld = async (lib, target) => {
   const targetURL = (target === Target.PROXY ? process.env.REACT_APP_PROXY_URL : process.env.REACT_APP_SERVER_URL);
@@ -35,8 +29,6 @@ const uploadFile = async (lib, target, file) => {
 };
 
 export {
-  ApiLib,
-  Target,
   helloWorld,
   downloadFile,
   uploadFile,
