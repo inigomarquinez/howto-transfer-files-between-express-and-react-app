@@ -17,7 +17,7 @@ import {
   helloWorld,
   downloadFile,
   uploadFile,
-} from './api/api';
+} from './api';
 
 const App = () => {
   const fileInputRef = createRef();
