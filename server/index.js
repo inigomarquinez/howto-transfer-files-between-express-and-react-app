@@ -9,8 +9,6 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const colors = require('colors');
 
-// const { generatePdf } = require('./utils');
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
