@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
 const express = require('express');
 // const { join } = require('path');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const FormData = require('formdata-node');
+const download = require('downloadjs');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -11,71 +13,46 @@ const upload = multer({ storage });
 const port = 4000;
 
 const app = express();
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/proxy', (_req, res) => {
-  console.log('*** [proxy] GET /proxy ***');
-  return axios
-    .get('http://localhost:3001')
-    .then(({ data }) => console.log('proxy resending response for GET /', data) || res.json(data))
-    .catch((error) => console.error(error.message));
+const serverURL = 'http://localhost:3001';
+
+app.get('/proxy/helloWorld', async (_req, res) => {
+  console.log(`[AXIOS REQUEST] GET ${serverURL}/helloWorld ...`);
+
+  const response = await axios.get(`${serverURL}/helloWorld`);
+  console.log(`[AXIOS RESPONSE] GET ${serverURL}/helloWorld ...`, response);
+
+  res.json(response.data);
 });
 
 app.get('/proxy/download', (_req, res) => {
-  console.log('*** [proxy] GET /proxy/download ***');
+  console.log(`[AXIOS REQUEST] GET ${serverURL}/download ...`);
 
   return axios({
     method: 'get',
-    url: 'http://localhost:3001/download',
+    url: `${serverURL}/download`,
     data: {},
-    responseType: 'blob',
+    // responseType: 'blob',
+    responseType: 'arraybuffer',
   })
-  // return axios
-  //   .get('http://localhost:3001/download')
     .then((response) => {
-      console.log('Response:');
+      console.log(`[AXIOS RESPONSE] GET ${serverURL}/download ...`);
       console.log(response);
-      // return res.send(response.data);
-      return res.send(Buffer.from(response.data));
+
+      const buffer = Buffer.from(response.data);
+      res.set('Content-Type', 'application/zip');
+      return res.send(buffer);
     });
-
-  // res.download(
-  //   join(__dirname, 'file-to-download.zip'),
-  //   'download.zip',
-  //   (error) => {
-  //     if (error) {
-  //       console.error('Error downloading file: >>>', error);
-  //     } else {
-  //       console.info('File downloaded!');
-  //     }
-  //   },
-  // );
 });
-
-// app.get('/pdf', async (_req, res) => {
-//   await generatePdf();
-
-//   res.sendStatus(200);
-// // res
-// //   .download(
-// //     join(__dirname, 'file-to-download.zip'),
-// //     'download.zip',
-// //     (error) => {
-// //       if (error) {
-// //         console.error('Error downloading file: >>>', error);
-// //       } else {
-// //         console.info('File downloaded!');
-// //       }
-// //     },
-// //   );
-// });
 
 app.post(
   '/proxy/upload',
   upload.single('file'),
   (req, res) => {
-    console.log('*** [proxy] POST /proxy/upload ***');
+    console.log(`[AXIOS REQUEST] POST ${serverURL}/upload ...`);
 
     const { file } = req;
     const form = new FormData();
@@ -87,12 +64,12 @@ app.post(
 
     return axios({
       method: 'post',
-      url: 'http://localhost:3001/upload',
+      url: `${serverURL}/upload`,
       data: form,
       headers: { 'Content-Type': 'multipart/form-data' },
     })
       .then(({ data }) => {
-        console.log('Response:');
+        console.log(`[AXIOS RESPONSE] POST ${serverURL}/upload ...`);
         console.log(data);
         res.json(data);
       })

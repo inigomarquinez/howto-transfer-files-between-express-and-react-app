@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require('express');
 const { join } = require('path');
 const cors = require('cors');
@@ -20,14 +21,11 @@ const initServer = () => {
   app = express();
 
   app.use(cors());
-  // parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));
-
-  // parse application/json
   app.use(bodyParser.json());
 
-  app.get('/', (_req, res) => {
-    res.send('Hello World!');
+  app.get('/helloWorld', (_req, res) => {
+    res.json('Hello World!');
   });
 
   app.get('/download', (_req, res) => {
