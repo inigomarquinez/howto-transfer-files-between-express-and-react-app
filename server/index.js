@@ -9,8 +9,9 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const colors = require('colors');
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ dest: 'uploads/' });
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage });
 
 if (!process.env.PORT) {
   console.error(colors.red('ERROR: PORT env variable required!'));
@@ -60,10 +61,8 @@ app.get('/long', async (_req, res) => {
 });
 
 app.post('/upload', upload.single('file'), (req, res) => {
-  console.log('req', req);
   const { file } = req;
-
-  // console.log('file :>> ', file);
+  console.log('file :>> ', file);
 
   res.send('File uploaded!');
 });

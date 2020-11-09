@@ -6,7 +6,7 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const multer = require('multer');
-const FormData = require('formdata-node');
+const FormData = require('form-data');
 const colors = require('colors');
 
 const storage = multer.memoryStorage();
@@ -63,18 +63,21 @@ app.post(
     console.log(`[AXIOS REQUEST] POST ${process.env.SERVER_URL}/upload ...`);
 
     const { file } = req;
+
     const form = new FormData();
-    form.set('file', file.buffer);
-
-    console.log('FormData proxy file :>> ', form.get('file'));
-
-    // const blob = Buffer.from(file.buffer);
+    form.append(file.fieldname, file.buffer, {
+      filename: file.originalname,
+      contentType: file.mimetype,
+      knownLength: file.size,
+    });
 
     return axios({
       method: 'post',
       url: `${process.env.SERVER_URL}/upload`,
       data: form,
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: {
+        ...form.getHeaders(),
+      },
     })
       .then(({ data }) => {
         console.log(`[AXIOS RESPONSE] POST ${process.env.SERVER_URL}/upload ...`);

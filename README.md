@@ -13,3 +13,5 @@ Cors: enable content-disposition
 https://developer.mozilla.org/es/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
 https://medium.com/zero-equals-false/using-cors-in-express-cac7e29b005b
 https://expressjs.com/en/resources/middleware/cors.html
+
+https://medium.com/@fakiolinho/handle-blobs-requests-with-axios-the-right-way-bb905bdb1c04
