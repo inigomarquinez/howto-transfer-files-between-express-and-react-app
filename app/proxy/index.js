@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 require('dotenv').config();
 const { exit } = require('process');
-const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const colors = require('colors');
+const express = require('express');
+const FormData = require('form-data');
 const helmet = require('helmet');
 const multer = require('multer');
-const FormData = require('form-data');
-const colors = require('colors');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -27,34 +27,39 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/proxy/helloWorld', async (_req, res) => {
-  console.log(`[AXIOS REQUEST] GET ${process.env.SERVER_URL}/helloWorld ...`);
+app.get(
+  '/proxy/helloWorld',
+  async (_req, res) => {
+    console.log(`[AXIOS REQUEST] GET ${process.env.SERVER_URL}/helloWorld ...`);
 
-  const response = await axios.get(`${process.env.SERVER_URL}/helloWorld`);
-  console.log(`[AXIOS RESPONSE] GET ${process.env.SERVER_URL}/helloWorld ...`, response);
+    const response = await axios.get(`${process.env.SERVER_URL}/helloWorld`);
+    console.log(`[AXIOS RESPONSE] GET ${process.env.SERVER_URL}/helloWorld ...`, response);
 
-  res.json(response.data);
-});
+    res.json(response.data);
+  },
+);
 
-app.get('/proxy/download', (_req, res) => {
-  console.log(`[AXIOS REQUEST] GET ${process.env.SERVER_URL}/download ...`);
+app.get(
+  '/proxy/download',
+  (_req, res) => {
+    console.log(`[AXIOS REQUEST] GET ${process.env.SERVER_URL}/download ...`);
 
-  return axios({
-    method: 'get',
-    url: `${process.env.SERVER_URL}/download`,
-    data: {},
-    // responseType: 'blob',
-    responseType: 'arraybuffer',
-  })
-    .then((response) => {
-      console.log(`[AXIOS RESPONSE] GET ${process.env.SERVER_URL}/download ...`);
-      console.log(response);
+    return axios({
+      method: 'get',
+      url: `${process.env.SERVER_URL}/download`,
+      data: {},
+      responseType: 'arraybuffer',
+    })
+      .then((response) => {
+        console.log(`[AXIOS RESPONSE] GET ${process.env.SERVER_URL}/download ...`);
+        console.log(response);
 
-      const buffer = Buffer.from(response.data);
-      res.set('Content-Type', 'application/zip');
-      return res.send(buffer);
-    });
-});
+        const buffer = Buffer.from(response.data);
+        res.set('Content-Type', 'application/zip');
+        return res.send(buffer);
+      });
+  },
+);
 
 app.post(
   '/proxy/upload',
@@ -89,5 +94,5 @@ app.post(
 );
 
 app.listen(process.env.PORT, () => {
-  console.log(`Proxy listening at http://localhost:${process.env.PORT}`);
+  console.log(`Proxy listening at port ${process.env.PORT}`);
 });

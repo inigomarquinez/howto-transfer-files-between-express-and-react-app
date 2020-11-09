@@ -13,8 +13,8 @@
     "type": "git",
     "url": "git+https://github.com/inigomarquinez/howto-transfer-files-between-express-and-react-app.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Íñigo Marquínez <inigo.marquinez@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/inigomarquinez/howto-transfer-files-between-express-and-react-app/issues"
   },
