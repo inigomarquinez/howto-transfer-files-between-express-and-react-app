@@ -7,8 +7,8 @@
     "start": "nodemon .",
     "start:prod": "node ."
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Íñigo Marquínez <inigo.marquinez@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
     "colors": "^1.4.0",
