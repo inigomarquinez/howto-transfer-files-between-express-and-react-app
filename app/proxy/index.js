@@ -22,6 +22,16 @@ if (!process.env.SERVER_URL) {
   exit();
 }
 
+axios.interceptors.request.use((req) => {
+  console.log(`[PROXY AXIOS REQUEST] ${req.method} ${req.url}`);
+  return req;
+});
+
+axios.interceptors.response.use((res) => {
+  console.log(`[PROXY AXIOS RESPONSE] ${res.config.method} ${res.config.url}: >>>`, res);
+  return res;
+});
+
 const app = express();
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,43 +40,30 @@ app.use(bodyParser.json());
 app.get(
   '/proxy/helloWorld',
   async (_req, res) => {
-    console.log(`[AXIOS REQUEST] GET ${process.env.SERVER_URL}/helloWorld ...`);
-
     const response = await axios.get(`${process.env.SERVER_URL}/helloWorld`);
-    console.log(`[AXIOS RESPONSE] GET ${process.env.SERVER_URL}/helloWorld ...`, response);
-
     res.json(response.data);
   },
 );
 
 app.get(
   '/proxy/download',
-  (_req, res) => {
-    console.log(`[AXIOS REQUEST] GET ${process.env.SERVER_URL}/download ...`);
-
-    return axios({
-      method: 'get',
-      url: `${process.env.SERVER_URL}/download`,
-      data: {},
-      responseType: 'arraybuffer',
-    })
-      .then((response) => {
-        console.log(`[AXIOS RESPONSE] GET ${process.env.SERVER_URL}/download ...`);
-        console.log(response);
-
-        const buffer = Buffer.from(response.data);
-        res.set('Content-Type', 'application/zip');
-        return res.send(buffer);
-      });
-  },
+  (_req, res) => axios({
+    method: 'get',
+    url: `${process.env.SERVER_URL}/download`,
+    data: {},
+    responseType: 'arraybuffer',
+  })
+    .then((response) => {
+      const buffer = Buffer.from(response.data);
+      res.set('Content-Type', 'application/zip');
+      return res.send(buffer);
+    }),
 );
 
 app.post(
   '/proxy/upload',
   upload.single('file'),
   (req, res) => {
-    console.log(`[AXIOS REQUEST] POST ${process.env.SERVER_URL}/upload ...`);
-
     const { file } = req;
 
     const form = new FormData();
@@ -85,7 +82,6 @@ app.post(
       },
     })
       .then(({ data }) => {
-        console.log(`[AXIOS RESPONSE] POST ${process.env.SERVER_URL}/upload ...`);
         console.log(data);
         res.json(data);
       })
